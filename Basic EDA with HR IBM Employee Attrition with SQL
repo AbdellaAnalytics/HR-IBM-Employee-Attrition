@@ -1,0 +1,174 @@
+--  Basic EDA with HR IBM Employee Attrition with SQL:
+-- About Dataset ;
+--- Uncover the factors that lead to employee attrition .
+--This is a fictional data set created by IBM data scientists.
+
+--source of data (kaggle.com)
+-- first we need to upload data to sql server management studio from excel workbook 
+--second make some data exploratory and get some insights ;
+
+
+-- let's check the all data we have ;
+
+Select*
+from ['IBM Employee Attrition$']
+
+
+
+-- Attrition Analysis:
+
+SELECT
+sum(EmployeeCount) as Total_Employees,  SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) AS AttritionCount,
+  SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) / COUNT(*) * 100 AS AttritionPercentage
+FROM ['IBM Employee Attrition$'];
+
+-- Employee Demographics:
+
+SELECT
+  Age,
+  Gender,
+  MaritalStatus,
+  COUNT(*) AS TotalEmployees
+FROM ['IBM Employee Attrition$']
+GROUP BY Age, Gender, MaritalStatus;
+---------------------------------------------
+SELECT
+  Gender,
+  COUNT(*) AS TotalEmployees,
+  AVG(Age) AS AvgAge,
+  AVG(YearsAtCompany) AS AvgYearsAtCompany,
+  AVG(MonthlyIncome) AS AvgMonthlyIncome
+FROM ['IBM Employee Attrition$']
+GROUP BY Gender;
+
+--Business Travel Analysis:
+
+SELECT
+  BusinessTravel,
+  COUNT(*) AS TotalEmployees
+FROM ['IBM Employee Attrition$']
+GROUP BY BusinessTravel;
+
+--Department Analysis:
+
+SELECT
+  Department,
+  COUNT(*) AS TotalEmployees
+FROM ['IBM Employee Attrition$']
+GROUP BY Department;
+
+
+--Job Role Analysis:
+SELECT
+  JobRole,
+  COUNT(*) AS TotalEmployees,
+  AVG(JobSatisfaction) AS AvgJobSatisfaction,
+  AVG(PerformanceRating) AS AvgPerformanceRating,
+  AVG(YearsInCurrentRole) AS AvgYearsInCurrentRole
+FROM ['IBM Employee Attrition$']
+GROUP BY JobRole;
+
+--Education Analysis:
+SELECT
+  Education,
+  EducationField,
+  COUNT(*) AS TotalEmployees,
+  AVG(TotalWorkingYears) AS AvgTotalWorkingYears
+FROM ['IBM Employee Attrition$']
+GROUP BY Education, EducationField
+ORDER BY Education
+
+--Salary Analysis:
+
+SELECT
+  JobRole,
+  ROUND(AVG(MonthlyIncome),2) AS AvgMonthlyIncome,
+  MAX(MonthlyIncome) AS MaxMonthlyIncome,
+  MIN(MonthlyIncome) AS MinMonthlyIncome
+FROM ['IBM Employee Attrition$']
+GROUP BY JobRole;
+
+-- See the AVG hour rate for each job role and JobSatisfaction
+SELECT Department, JobRole, count(JobSatisfaction) as jobsatisfactioncount, round(avg(HourlyRate),2) as AVG_hour_rate
+FROM ['IBM Employee Attrition$']
+GROUP BY Department,JobRole
+ORDER BY 1,3
+
+-- Is there a correlation between JobSatisfaction and DistanceFromHome and attrition rates?
+
+SELECT  JobRole, COUNT(attrition) as count_attrition, sum(JobSatisfaction) as jobsatisfactioncount, sum(DistanceFromHome) as distance_home
+FROM ['IBM Employee Attrition$']
+WHERE Attrition = 'Yes'
+GROUP BY JobRole
+ORDER BY count_attrition
+
+-- make some comparisons between all satisfaction measures , total service , worklifebalance
+SELECT  JobRole, COUNT(attrition) as count_attrition, sum(JobSatisfaction) as jobsatisfactioncount, sum(DistanceFromHome) as distance_home
+, sum(EnvironmentSatisfaction) as env_satisfaction, sum(RelationshipSatisfaction) rela_satisfaction, sum(YearsAtCompany) as total_service
+, count(WorkLifeBalance) as avg_worklifebalance
+FROM ['IBM Employee Attrition$']
+GROUP BY JobRole
+ORDER BY count_attrition
+
+
+--Does age have any relationship with attrition? 
+--Are older employees more likely to leave the company?
+
+SELECT
+  CASE
+    WHEN Age BETWEEN 18 AND 25 THEN '18-25'
+    WHEN Age BETWEEN 26 AND 35 THEN '26-35'
+    WHEN Age BETWEEN 36 AND 45 THEN '36-45'
+    WHEN Age BETWEEN 46 AND 55 THEN '46-55'
+    ELSE '56+'
+  END AS AgeCategory,
+  AVG(MonthlyIncome) OVER (PARTITION BY CASE
+                                         WHEN Age BETWEEN 18 AND 25 THEN '18-25'
+                                         WHEN Age BETWEEN 26 AND 35 THEN '26-35'
+                                         WHEN Age BETWEEN 36 AND 45 THEN '36-45'
+                                         WHEN Age BETWEEN 46 AND 55 THEN '46-55'
+                                         ELSE '56+'
+                                       END) AS AvgMonthlyIncome,
+  COUNT(*) OVER (PARTITION BY CASE
+                                 WHEN Age BETWEEN 18 AND 25 THEN '18-25'
+                                 WHEN Age BETWEEN 26 AND 35 THEN '26-35'
+                                 WHEN Age BETWEEN 36 AND 45 THEN '36-45'
+                                 WHEN Age BETWEEN 46 AND 55 THEN '46-55'
+                                 ELSE '56+'
+                               END, Attrition) AS AttritionCount
+FROM ['IBM Employee Attrition$']
+WHERE Attrition like 'Yes'
+
+--Is there a correlation between overtime work and attrition rates?
+
+SELECT
+  Department,
+  OverTime,
+  Attrition,
+  COUNT(*) AS Count
+FROM ['IBM Employee Attrition$']
+where OverTime = 'Yes'
+GROUP BY Department, OverTime, Attrition
+
+--Is there a correlation between job satisfaction and EnvironmentSatisfaction?
+SELECT
+  JobSatisfaction,
+  EnvironmentSatisfaction, 
+  COUNT(*) AS Total_employees
+FROM ['IBM Employee Attrition$']
+GROUP BY JobSatisfaction, EnvironmentSatisfaction
+ORDER BY 1, 3
+
+--Are employees in certain departments or job role more likely to experience attrition than others?
+
+
+SELECT
+  Department,
+  JobRole,
+  Attrition,
+  COUNT(*) AS Count
+FROM ['IBM Employee Attrition$']
+WHERE Attrition like 'Yes'
+GROUP BY Department,JobRole, Attrition
+ORDER BY 1
+
