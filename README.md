@@ -1,31 +1,30 @@
-Basic EDA with HR IBM Employee Attrition using SQL
+# Basic EDA with HR IBM Employee Attrition using SQL
 
-Overview
+# Overview
 
-This project performs a basic exploratory data analysis (EDA) of the fictional IBM Employee Attrition dataset. Using SQL queries, we aim to uncover factors contributing to employee attrition and provide insights into employee demographics, job satisfaction, salary patterns, and more.
+# This project performs a basic exploratory data analysis (EDA) of the fictional IBM Employee Attrition dataset. Using SQL queries, we aim to uncover factors contributing to employee attrition and provide insights into employee demographics, job satisfaction, salary patterns, and more.
 
-About the Dataset
+# About the Dataset
 
-Source: The dataset is publicly available on Kaggle.
+# Source: The dataset is publicly available on Kaggle.
 
-Purpose: Understand the key factors influencing employee attrition.
+# Purpose: Understand the key factors influencing employee attrition.
 
-Nature: Fictional dataset created by IBM data scientists.
+# Nature: Fictional dataset created by IBM data scientists.
 
-Workflow
+# Workflow
 
-Step 1: Data Preparation
+# Step 1: Data Preparation
+# Upload the dataset (Excel workbook) to SQL Server Management Studio.
 
-Upload the dataset (Excel workbook) to SQL Server Management Studio.
-
-Confirm successful upload by querying the data:
+# Confirm successful upload by querying the data:
 
 SELECT *
 FROM ['IBM Employee Attrition$'];
 
 Step 2: Exploratory Data Analysis
 
-1. Attrition Analysis
+# 1. Attrition Analysis
 
 Identify total employees, count of employees with attrition, and calculate the attrition percentage:
 
@@ -35,7 +34,7 @@ SELECT
   SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) / COUNT(*) * 100 AS AttritionPercentage
 FROM ['IBM Employee Attrition$'];
 
-2. Employee Demographics
+# 2. Employee Demographics
 
 Analyze demographics like age, gender, and marital status:
 
@@ -47,7 +46,7 @@ SELECT
 FROM ['IBM Employee Attrition$']
 GROUP BY Age, Gender, MaritalStatus;
 
-3. Business Travel Analysis
+# 3. Business Travel Analysis
 
 Examine the distribution of employees across business travel categories:
 
@@ -57,7 +56,7 @@ SELECT
 FROM ['IBM Employee Attrition$']
 GROUP BY BusinessTravel;
 
-4. Department Analysis
+# 4. Department Analysis
 
 Analyze employee distribution by department:
 
@@ -67,7 +66,7 @@ SELECT
 FROM ['IBM Employee Attrition$']
 GROUP BY Department;
 
-5. Job Role and Satisfaction Analysis
+# 5. Job Role and Satisfaction Analysis
 
 Evaluate job satisfaction, performance rating, and years in current role by job role:
 
@@ -80,7 +79,7 @@ SELECT
 FROM ['IBM Employee Attrition$']
 GROUP BY JobRole;
 
-6. Salary Analysis
+# 6. Salary Analysis
 
 Analyze average, maximum, and minimum salary by job role:
 
@@ -92,7 +91,7 @@ SELECT
 FROM ['IBM Employee Attrition$']
 GROUP BY JobRole;
 
-7. Satisfaction vs. Attrition
+# 7. Satisfaction vs. Attrition
 
 Explore relationships between job satisfaction, environment satisfaction, and attrition:
 
@@ -105,7 +104,7 @@ FROM ['IBM Employee Attrition$']
 WHERE Attrition = 'Yes'
 GROUP BY JobRole;
 
-8. Age and Attrition
+# 8. Age and Attrition
 
 Analyze the relationship between age and attrition rates:
 
@@ -134,7 +133,7 @@ SELECT
 FROM ['IBM Employee Attrition$']
 WHERE Attrition LIKE 'Yes';
 
-9. Overtime vs. Attrition
+# 9. Overtime vs. Attrition
 
 Evaluate the correlation between overtime and attrition rates:
 
@@ -147,7 +146,7 @@ FROM ['IBM Employee Attrition$']
 WHERE OverTime = 'Yes'
 GROUP BY Department, OverTime, Attrition;
 
-10. Department & Role Attrition
+# 10. Department & Role Attrition
 
 Identify departments or roles with higher attrition rates:
 
@@ -161,22 +160,22 @@ WHERE Attrition LIKE 'Yes'
 GROUP BY Department, JobRole, Attrition
 ORDER BY Count DESC;
 
-Insights
+# Insights
 
-Key insights can be derived from the above queries, such as:
+# Key insights can be derived from the above queries, such as:
 
-Attrition rates by department, role, or demographic group.
+# Attrition rates by department, role, or demographic group.
 
-Relationship between job satisfaction and attrition.
+# Relationship between job satisfaction and attrition.
 
-Impact of overtime, salary, and travel requirements on employee retention.
+# Impact of overtime, salary, and travel requirements on employee retention.
 
-Tools Used
+# Tools Used
 
 SQL Server Management Studio (SSMS): For running SQL queries and analyzing data.
 
 Microsoft Excel: To upload and preprocess the dataset.
 
-Conclusion
+# Conclusion
 
 This project demonstrates how SQL can be leveraged to uncover valuable insights from HR data. The analysis provides actionable insights into employee attrition patterns and factors influencing retention.
